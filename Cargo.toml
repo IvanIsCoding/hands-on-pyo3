@@ -1,0 +1,16 @@
+[package]
+name = "jxl_demo"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "jxl_demo"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.26.0", features = ["abi3", "extension-module"] }
+numpy = "0.26"
+jxl-oxide = "=0.8.1"
+ndarray = "0.16"
