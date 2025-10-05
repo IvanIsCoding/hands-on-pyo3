@@ -12,5 +12,5 @@ crate-type = ["cdylib"]
 [dependencies]
 pyo3 = { version = "0.26.0", features = ["abi3", "extension-module"] }
 numpy = "0.26"
-jxl-oxide = "=0.8.1"
+jxl-oxide = "0.12"
 ndarray = "0.16"
