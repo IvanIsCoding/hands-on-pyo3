@@ -25,7 +25,7 @@ fn decode_jxl_bytes<'py>(py: Python<'py>, jxl_bytes: &Bound<'py, PyBytes>) -> Py
     let image_header = image.image_header();
     let width = image_header.size.width as usize;
     let height = image_header.size.height as usize;
-    let channels = match image_header.metadata.color_encoding.color_space() {
+    let channels = match image_header.metadata.colour_encoding.colour_space() {
         ColourSpace::Rgb => 3,
         ColourSpace::Grey => 1,
         _ => return Err(pyo3::exceptions::PyValueError::new_err("Only RGB and grayscale images are supported")),
