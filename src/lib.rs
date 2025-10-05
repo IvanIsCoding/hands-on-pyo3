@@ -12,7 +12,7 @@ fn decode_jxl_bytes<'py>(py: Python<'py>, jxl_bytes: &Bound<'py, PyBytes>) -> Py
     let bytes = jxl_bytes.as_bytes();
     
     // Decode the JPEG XL image
-    let mut image = JxlImage::builder()
+    let image = JxlImage::builder()
         .read(std::io::Cursor::new(bytes))
         .map_err(|e| pyo3::exceptions::PyValueError::new_err(format!("Failed to read JXL image: {}", e)))?;
     
