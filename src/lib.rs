@@ -60,11 +60,11 @@ fn decode_jxl<'py>(
     Ok(pil_img)
 }
 
-/// jxl_demo_rs contains the functions to read JPEG XL bytes into Python imaging objects.
+/// jxl_demo contains the functions to read JPEG XL bytes into Python imaging objects.
 ///
-/// This declares a module. The module will be imported in Python as `import jxl_demo.jxl_demo_rs`
+/// This declares a module. The module will be imported in Python as `import jxl_demo`
 #[pymodule]
-fn jxl_demo_rs(m: &Bound<'_, PyModule>) -> PyResult<()> {
+fn jxl_demo(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(decode_jxl_as_array, m)?)?;
     m.add_function(wrap_pyfunction!(decode_jxl, m)?)?;
     Ok(())
