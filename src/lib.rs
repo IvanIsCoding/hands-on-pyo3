@@ -33,6 +33,7 @@ fn decode_jxl<'py>(
 ) -> PyResult<Bound<'py, PyAny>> {
     // Import PIL.Image module
     let pil_image = py.import("PIL.Image")?;
+    let fromarray_fn = pil_image.getattr("fromarray")?;
 
     // Get the NumPy array from our existing function
     let np_array = decode_jxl_as_array(py, jxl_bytes)?;
@@ -42,13 +43,15 @@ fn decode_jxl<'py>(
 
     // Create Pillow Image from NumPy array
     let pil_img = if shape[2] == 3 {
-        // RGB case: use mode "RGB"
-        pil_image.call_method1("fromarray", (np_array, "RGB"))?
+        // a.k.a. RGB case
+        fromarray_fn.call1((np_array, "RGB"))?
     } else if shape[2] == 1 {
-        // Monochrome case: squeeze the last dimension and use mode "L"
+        // a.k.a. monochrome case
+        // Some data manipulation first, then fromarray call
         let squeezed = np_array.call_method1("squeeze", (2,))?;
-        pil_image.call_method1("fromarray", (squeezed, "L"))?
+        fromarray_fn.call1((squeezed, "L"))?
     } else {
+        // if we get something like RGBA, let's error for the sake of simplicity
         return Err(pyo3::exceptions::PyValueError::new_err(
             "Unsupported number of channels",
         ));
