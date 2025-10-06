@@ -10,7 +10,7 @@ name = "jxl_demo"
 crate-type = ["cdylib"]
 
 [dependencies]
+ndarray = "0.16"
 pyo3 = { version = "0.26.0", features = ["abi3", "extension-module"] }
 numpy = "0.26"
 jxl-oxide = { version = "0.12", default-features = false, features = ["rayon"]}
-ndarray = "0.16"

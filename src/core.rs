@@ -3,7 +3,7 @@ use jxl_oxide::JxlImage;
 use ndarray::Array3;
 
 /// Core business logic: decode JPEG XL image from any readable source
-pub (crate) fn decode_jxl_core<R: std::io::Read>(reader: R) -> Result<Array3<u8>, String> {
+pub(crate) fn decode_jxl_core<R: std::io::Read>(reader: R) -> Result<Array3<u8>, String> {
     // Decode the JPEG XL image
     let image = JxlImage::builder()
         .read(reader)
