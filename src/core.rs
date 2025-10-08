@@ -1,9 +1,7 @@
-use jxl_oxide::color::ColourSpace;
 use jxl_oxide::JxlImage;
-use ndarray::Array3;
+use ndarray::ArrayD;
 
-/// Core business logic: decode JPEG XL image from any readable source
-pub(crate) fn decode_jxl_core<R: std::io::Read>(reader: R) -> Result<Array3<u8>, String> {
+pub(crate) fn decode_jxl_core<R: std::io::Read>(reader: R) -> Result<ArrayD<u8>, String> {
     // Decode the JPEG XL image
     let image = JxlImage::builder()
         .read(reader)
@@ -18,11 +16,6 @@ pub(crate) fn decode_jxl_core<R: std::io::Read>(reader: R) -> Result<Array3<u8>,
     let image_header = image.image_header();
     let width = image_header.size.width as usize;
     let height = image_header.size.height as usize;
-    let channels = match image_header.metadata.colour_encoding.colour_space() {
-        ColourSpace::Rgb => 3,
-        ColourSpace::Grey => 1,
-        _ => return Err("Only RGB and grayscale images are supported".to_string()),
-    };
 
     // Convert render to u8 buffer
     let buffer = render.image_all_channels();
@@ -32,8 +25,32 @@ pub(crate) fn decode_jxl_core<R: std::io::Read>(reader: R) -> Result<Array3<u8>,
         .map(|&v| (v * 255.0).round() as u8)
         .collect();
 
-    // Create ndarray from the data
-    let array = Array3::from_shape_vec((height, width, channels), data)
+    // Calculate actual channels from buffer size
+    let total_pixels = width * height;
+    let actual_channels = data.len() / total_pixels;
+
+    // Verify the calculation makes sense
+    if data.len() != total_pixels * actual_channels {
+        return Err(format!(
+            "Buffer size mismatch: got {} bytes, expected {} ({}x{}x{})",
+            data.len(),
+            total_pixels * actual_channels,
+            height,
+            width,
+            actual_channels
+        ));
+    }
+
+    // Validate channels
+    if ![1, 3].contains(&actual_channels) {
+        return Err(format!(
+            "Unsupported number of channels: {}",
+            actual_channels
+        ));
+    }
+
+    // Create dynamic ndarray
+    let array = ArrayD::from_shape_vec(vec![height, width, actual_channels], data)
         .map_err(|e| format!("Failed to create array: {}", e))?;
 
     Ok(array)

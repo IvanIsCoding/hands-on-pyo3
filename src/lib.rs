@@ -1,28 +1,28 @@
 mod core;
 
 use core::decode_jxl_core;
-use numpy::PyArray3;
+use numpy::PyArrayDyn;
 use numpy::PyUntypedArrayMethods;
 use pyo3::prelude::*;
 use pyo3::types::PyBytes;
 
-/// Python binding: decode JPEG XL image bytes and return as NumPy array (8-bit RGB/mono only)
+/// Python binding: decode JPEG XL image bytes and return as NumPy array (8-bit, 1/3/4 channels)
 #[pyfunction]
 fn decode_jxl_as_array<'py>(
     py: Python<'py>,
     jxl_bytes: &Bound<'py, PyBytes>,
-) -> PyResult<Bound<'py, PyArray3<u8>>> {
+) -> PyResult<Bound<'py, PyArrayDyn<u8>>> {
     // Extract bytes from PyBytes to a Rust data struct jxl-oxide can read.
     // Manipulating Python data into a format Rust accepts is common in PyO3 code.
     let bytes = jxl_bytes.as_bytes();
     let cursor = std::io::Cursor::new(bytes);
 
-    // This method reads the image in a ndarray::Array3. Implmentation details
+    // This method reads the image in a ndarray::ArrayD. Implementation details
     // are not relevant.
     let array = decode_jxl_core(cursor).map_err(|e| pyo3::exceptions::PyValueError::new_err(e))?;
 
     // Convert to a NumPy array and return.
-    Ok(PyArray3::from_array(py, &array))
+    Ok(PyArrayDyn::from_array(py, &array))
 }
 
 /// Python binding: decode JPEG XL image bytes and return as Pillow Image
