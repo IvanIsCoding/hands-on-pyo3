@@ -7,51 +7,45 @@ pub(crate) fn decode_jxl_core<R: std::io::Read>(reader: R) -> Result<ArrayD<u8>,
         .read(reader)
         .map_err(|e| format!("Failed to read JXL image: {}", e))?;
 
-    // Render the image
-    let render = image
-        .render_frame(0)
-        .map_err(|e| format!("Failed to render JXL frame: {}", e))?;
-
     // Get image metadata
     let image_header = image.image_header();
     let width = image_header.size.width as usize;
     let height = image_header.size.height as usize;
 
-    // Convert render to u8 buffer
-    let buffer = render.image_all_channels();
-    let data: Vec<u8> = buffer
-        .buf()
-        .iter()
-        .map(|&v| (v * 255.0).round() as u8)
-        .collect();
+    // Render the first frame
+    let render = image
+        .render_frame(0)
+        .map_err(|e| format!("Failed to render JXL frame: {}", e))?;
 
-    // Calculate actual channels from buffer size
-    let total_pixels = width * height;
-    let actual_channels = data.len() / total_pixels;
+    // Use stream to get the image data with all channels (including alpha)
+    let mut stream = render.stream();
+    let channels = stream.channels() as usize;
 
-    // Verify the calculation makes sense
-    if data.len() != total_pixels * actual_channels {
+    // Pre-allocate buffer with correct size
+    let total_size = width * height * channels;
+    let mut buffer = vec![0u8; total_size];
+
+    // Write the stream data to buffer
+    let written = stream.write_to_buffer(&mut buffer);
+    if written != total_size {
         return Err(format!(
-            "Buffer size mismatch: got {} bytes, expected {} ({}x{}x{})",
-            data.len(),
-            total_pixels * actual_channels,
-            height,
-            width,
-            actual_channels
+            "Buffer write size mismatch: wrote {} bytes, expected {}",
+            written, total_size
         ));
     }
 
-    // Validate channels
-    if ![1, 3].contains(&actual_channels) {
-        return Err(format!(
-            "Unsupported number of channels: {}",
-            actual_channels
-        ));
+    // Validate channels (support grayscale, RGB, and RGBA)
+    if ![1, 3, 4].contains(&channels) {
+        return Err(format!("Unsupported number of channels: {}", channels));
     }
 
-    // Create dynamic ndarray
-    let array = ArrayD::from_shape_vec(vec![height, width, actual_channels], data)
-        .map_err(|e| format!("Failed to create array: {}", e))?;
+    // Create dynamic ndarray with shape [height, width, channels]
+    let array = ArrayD::from_shape_vec(vec![height, width, channels], buffer).map_err(|e| {
+        format!(
+            "Failed to create array: {} (shape: [{}, {}, {}])",
+            e, height, width, channels
+        )
+    })?;
 
     Ok(array)
 }

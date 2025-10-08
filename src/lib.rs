@@ -45,16 +45,20 @@ fn decode_jxl<'py>(
     let pil_img = if shape[2] == 3 {
         // a.k.a. RGB case
         fromarray_fn.call1((np_array, "RGB"))?
+    } else if shape[2] == 4 {
+        // a.k.a. RGBA case
+        fromarray_fn.call1((np_array, "RGBA"))?
     } else if shape[2] == 1 {
         // a.k.a. monochrome case
         // Some data manipulation first, then fromarray call
         let squeezed = np_array.call_method1("squeeze", (2,))?;
         fromarray_fn.call1((squeezed, "L"))?
     } else {
-        // if we get something like RGBA, let's error for the sake of simplicity
-        return Err(pyo3::exceptions::PyValueError::new_err(
-            "Unsupported number of channels",
-        ));
+        // Unsupported number of channels
+        return Err(pyo3::exceptions::PyValueError::new_err(format!(
+            "Unsupported number of channels: {}. Expected 1 (grayscale), 3 (RGB), or 4 (RGBA)",
+            shape[2]
+        )));
     };
 
     Ok(pil_img)
