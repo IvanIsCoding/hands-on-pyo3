@@ -44,10 +44,10 @@ fn decode_jxl<'py>(
     // Create Pillow Image from NumPy array
     let pil_img = if shape[2] == 3 {
         // a.k.a. RGB case
-        fromarray_fn.call1((np_array, "RGB"))?
+        fromarray_fn.call1((np_array,))?
     } else if shape[2] == 4 {
         // a.k.a. RGBA case
-        fromarray_fn.call1((np_array, "RGBA"))?
+        fromarray_fn.call1((np_array,))?
     } else if shape[2] == 1 {
         // a.k.a. monochrome case
         // Some data manipulation first, then fromarray call
