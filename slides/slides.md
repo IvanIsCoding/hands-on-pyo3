@@ -122,3 +122,27 @@ features = ["pyo3/extension-module"]
 :::
 
 ::::
+
+## Dependencies
+
+This demo is only possible thanks to `jxl-oxide` and `pyo3` being easily available on crates.io.
+
+Rust arguably has more friendly dependency management than Python. We'll not discuss the Python packaging ecosystem.
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![crates.io](crates_io_screenshot.png)
+
+
+:::
+
+::: {.column width="50%"}
+
+![PyPI](pypi_screenshot.png)
+
+
+:::
+
+::::
