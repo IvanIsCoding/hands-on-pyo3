@@ -69,12 +69,12 @@ These are the two files from `maturin new`, edited by me.
 ::: {.column width="50%"}
 ### Cargo.toml
 
+\scriptsize
 ```toml
 [package]
 name = "jxl_demo"
 version = "0.1.0"
 edition = "2021"
-rust-version = "1.75"
 
 [lib]
 name = "jxl_demo"
@@ -82,15 +82,22 @@ crate-type = ["cdylib"]
 
 [dependencies]
 ndarray = "0.16"
-pyo3 = { version = "0.26.0", features = ["abi3", "extension-module"] }
+pyo3 = {
+    version = "0.26.0", 
+    features = [
+        "abi3",
+    "extension-module"
+    ]
+}
 numpy = "0.26"
-jxl-oxide = { version = "0.11.4", default-features = false}
+jxl-oxide = "0.11.4"
 ```
 :::
 
 ::: {.column width="50%"}
 ### pyproject.toml
 
+\scriptsize
 ```toml
 [build-system]
 requires = ["maturin>=1.9,<2.0"]
@@ -100,8 +107,7 @@ build-backend = "maturin"
 name = "jxl_demo"
 requires-python = ">=3.10"
 classifiers = [
-    "Programming Language :: Rust",
-    "Programming Language :: Python :: Implementation :: CPython",
+    // ommited
 ]
 dynamic = ["version"]
 dependencies = [
