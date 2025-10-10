@@ -38,8 +38,81 @@ We don't assume you'll be familiar with all of them. Rust users will know Rust t
 Python users will known Python tools. 
 
 - PyO3
-- maturin
-- cargo
+- Maturin
 - pip
-- crates.io
 - PyPI
+- Cargo
+- Crates.io
+
+
+## Motivating Problem
+
+To give us a concrete goal, this presentation will build an extension that can decode
+JPEG XL images.
+
+As of 2025, iPhones can now take photos and save in the JPEG XL file format. It's feasible you'd find this file format in the wild!
+
+## Maturin
+
+Maturin is a Python build tool provided by the PyO3 developers. It helps building Rust code as extensions.
+
+Maturin can be installed with `pip install maturin`.
+
+The initial draft of the repository was the output of `maturin new`.
+
+## Manifest files
+
+These are the two files from `maturin new`, edited by me.
+
+:::: {.columns}
+
+::: {.column width="50%"}
+### Cargo.toml
+
+```toml
+[package]
+name = "jxl_demo"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+
+[lib]
+name = "jxl_demo"
+crate-type = ["cdylib"]
+
+[dependencies]
+ndarray = "0.16"
+pyo3 = { version = "0.26.0", features = ["abi3", "extension-module"] }
+numpy = "0.26"
+jxl-oxide = { version = "0.11.4", default-features = false}
+```
+:::
+
+::: {.column width="50%"}
+### pyproject.toml
+
+```toml
+[build-system]
+requires = ["maturin>=1.9,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "jxl_demo"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+]
+dynamic = ["version"]
+dependencies = [
+    "pillow>=10.0",
+    "numpy>=2.0",
+]
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+
+```
+:::
+
+::::
