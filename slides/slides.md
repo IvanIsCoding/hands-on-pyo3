@@ -340,3 +340,12 @@ Rust tooling makes extensions easy to distribute:
 - Cross-compilation is feasible
 
 No one cares if your extension is fast it they can't install it!
+
+## Homework
+
+Give PyO3 a try:
+
+* Clone the Git repository and modify `src/lib.rs`
+* Define a `ImageMetadata` Python class in Rust with `width`, `height`, `channels`
+* Implement a `read_jxl_metadata` function that returns your `ImageMedata` from the previous step
+* Define a custom error type with PyO3 and make `read_jxl_metadata` raise that error instead of `ValueError`
