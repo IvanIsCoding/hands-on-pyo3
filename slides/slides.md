@@ -252,3 +252,14 @@ fn decode_jxl<'py>(
     Ok(pil_img)
 }
 ```
+
+## Handling Errors
+
+Python code raises exceptions when it finds errors.
+
+Rust code returns a `Result<T, E>` enum.
+
+PyO3 provides a `PyResult<T>` type:
+
+* If your method returns the `Ok(_)` case, it means no error happened
+* If it returns the `Err(_)` case, PyO3 will raise an exception on the Python side
