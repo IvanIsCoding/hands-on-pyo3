@@ -149,3 +149,31 @@ Rust arguably has more friendly dependency management than Python. We'll not dis
 :::
 
 ::::
+
+## PyO3
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+The glue between Python and Rust. PyO3 exposes:
+
+* Python types to Rust e.g. `PyAny`
+* Conversion between Rust and Python types
+* Rust functions to Python via `#[pyfunction]`
+* Rust strucs to Python via `#[pyclass]`
+
+
+
+:::
+
+::: {.column width="40%"}
+
+![Incomplete conversion list for PyO3](types_pyo3.png)
+
+
+:::
+
+::::
+
+## PyO3 In Practice
