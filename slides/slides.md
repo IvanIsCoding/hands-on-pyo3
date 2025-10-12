@@ -216,3 +216,39 @@ fn jxl_demo(m: &Bound<'_, PyModule>) -> PyResult<()> {
     Ok(())
 }
 ```
+
+## Elaborate workflows with Python
+
+One thing we haven't explored yet is that PyO3 has access to the Python interpreter. We can interact with the Python objects.
+
+PyO3 can go beyond just wrapping Rust code with input -> output.
+
+To give a concrete example, let's write some that interacts with `PIL`. Our demo will bridge the Rust and Python ecosystems.
+
+## Elaborate workflows in practice
+
+\tiny
+
+```rust
+#[pyfunction]
+fn decode_jxl<'py>(
+    py: Python<'py>,
+    jxl_bytes: &Bound<'py, PyBytes>,
+) -> PyResult<Bound<'py, PyAny>> {
+    // Import PIL.Image module
+    let pil_image = py.import("PIL.Image")?;
+    let fromarray_fn = pil_image.getattr("fromarray")?;
+
+    // Get the NumPy array from our existing function
+    let np_array = decode_jxl_as_array(py, jxl_bytes)?;
+
+    let shape = np_array.shape();
+    // Create Pillow Image from NumPy array
+    let pil_img = if shape[2] == 3 || shape[2] == 4 {
+        // a.k.a. RGB case
+        fromarray_fn.call1((np_array,))?
+    } else { /* omitted */};
+
+    Ok(pil_img)
+}
+```
