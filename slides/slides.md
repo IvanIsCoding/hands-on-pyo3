@@ -59,6 +59,10 @@ Maturin can be installed with `pip install maturin`.
 
 The initial draft of the repository was the output of `maturin new`.
 
+`maturin develop` installs the extension locally for development.
+
+`maturin build` is used to package a wheel.
+
 ## Manifest files
 
 These are the two files from `maturin new`, edited by me.
@@ -85,7 +89,7 @@ pyo3 = {
     version = "0.26.0", 
     features = [
         "abi3",
-    "extension-module"
+        "extension-module"
     ]
 }
 numpy = "0.26"
