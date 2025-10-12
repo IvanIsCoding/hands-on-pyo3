@@ -221,8 +221,6 @@ fn jxl_demo(m: &Bound<'_, PyModule>) -> PyResult<()> {
 
 One thing we haven't explored yet is that PyO3 has access to the Python interpreter. We can interact with the Python objects.
 
-PyO3 can go beyond just wrapping Rust code with input -> output.
-
 To give a concrete example, let's write some that interacts with `PIL`. Our demo will bridge the Rust and Python ecosystems.
 
 ## Elaborate workflows in practice
@@ -316,7 +314,7 @@ Purposefully write libraries in Rust to leverage the qualities of Rust:
   - [std::thread](https://doc.rust-lang.org/std/thread/) ships with the language
 - Feasible to use SIMD
   - [core::arch](https://doc.rust-lang.org/core/arch/index.html) makes platform-specific instructions available
-  - [std::simd](https://doc.rust-lang.org/std/simd/index.html) will make SIMD 
+  - [std::simd](https://doc.rust-lang.org/std/simd/index.html) is the unstable API that will democratize SIMD even more 
 
 ## Blazingly Fast Python Extensions (continued)
 
@@ -328,7 +326,17 @@ Purposefully write libraries in Rust to leverage the qualities of Rust:
   - [std::thread](https://doc.rust-lang.org/std/thread/) ships with the language
 - Feasible to use SIMD
   - [core::arch](https://doc.rust-lang.org/core/arch/index.html) makes platform-specific instructions available
-  - [std::simd](https://doc.rust-lang.org/std/simd/index.html) will make SIMD 
+  - [std::simd](https://doc.rust-lang.org/std/simd/index.html) is the unstable API that will democratize SIMD even more 
 - Re-use optimized solutions via dependencies
   - Easy to leverage the work of others
   - Example: [ryu](https://crates.io/crates/ryu), the crate for writing floats to strings
+
+## Let users install your library
+
+Rust tooling makes extensions easy to distribute:
+
+- Build for Linux, macOS, Windows
+- Target x86-64, ARM, PowerPC
+- Cross-compilation is feasible
+
+No one cares if your extension is fast it they can't install it!
