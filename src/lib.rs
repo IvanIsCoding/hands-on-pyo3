@@ -26,8 +26,18 @@ fn decode_jxl_as_array<'py>(
     Ok(PyArrayDyn::from_array(py, &array))
 }
 
-/// Python binding: decode JPEG XL image bytes and return as Pillow Image
+/// Decode JPEG XL (JXL) image bytes into a Pillow Image.
+///
+/// :param bytes jxl_bytes: Raw JPEG XL image data as a byte string.
+///
+/// :return: A Pillow ``Image`` object representing the decoded image.
+/// :rtype: PIL.Image.Image
+///
+/// :raises ValueError: If the number of channels is not 1, 3, or 4.
+/// :raises RuntimeError: If the decoding process fails due to invalid or
+///     corrupted data.
 #[pyfunction]
+#[pyo3(text_signature = "(jxl_bytes, /)")]
 fn decode_jxl<'py>(
     py: Python<'py>,
     jxl_bytes: &Bound<'py, PyBytes>,
