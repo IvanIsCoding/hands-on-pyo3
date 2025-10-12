@@ -270,7 +270,7 @@ Now that we introduced Rust extensions, we can categorize three main groups of e
 
 * Simple Rust bindings
 * Shared implementation between languages
-* High-performance Python extensions with Rust backend
+* Blazingly Fast Python Extensions
 
 ## Simple Rust Bindings
 
@@ -279,7 +279,56 @@ We want to reuse existing Rust code.
 Examples include:
 
 * This demo
-* [rpds-py](https://github.com/crate-py/rpds): bindings to a `rpds` from Rust
+* [rpds-py](https://github.com/crate-py/rpds): bindings to the `rpds` crate from Rust
 
-## Shared Implementation Between Lnguages
+## Shared Implementation Between Languages
 
+Write a Rust core and re-use it everywhere:
+
+* Python bindings with PyO3
+* Compile to WebAssembly (WASM) and use in JavaScript
+* Possible to extend to more languages, see [UniFFI](https://github.com/mozilla/uniffi-rs)
+
+[tiktoken](https://github.com/openai/tiktoken) is an example library that does that. 
+
+## Blazingly Fast Python Extensions
+
+Purposefully write libraries in Rust to leverage the qualities of Rust:
+
+- Compiled extensions are faster than interpreted Python code
+
+## Blazingly Fast Python Extensions (continued)
+
+Purposefully write libraries in Rust to leverage the qualities of Rust:
+
+- Compiled extensions are faster than interpreted Python code
+- Easy-to-use parallelism with low-overhead
+  - [Rayon](https://docs.rs/rayon/latest/rayon/) makes multi-threading easy
+  - [std::thread](https://doc.rust-lang.org/std/thread/) ships with the language
+
+## Blazingly Fast Python Extensions (continued)
+
+Purposefully write libraries in Rust to leverage the qualities of Rust:
+
+- Compiled extensions are faster than interpreted Python code
+- Easy-to-use parallelism with low-overhead
+  - [Rayon](https://docs.rs/rayon/latest/rayon/) makes multi-threading easy
+  - [std::thread](https://doc.rust-lang.org/std/thread/) ships with the language
+- Feasible to use SIMD
+  - [core::arch](https://doc.rust-lang.org/core/arch/index.html) makes platform-specific instructions available
+  - [std::simd](https://doc.rust-lang.org/std/simd/index.html) will make SIMD 
+
+## Blazingly Fast Python Extensions (continued)
+
+Purposefully write libraries in Rust to leverage the qualities of Rust:
+
+- Compiled extensions are faster than interpreted Python code
+- Easy-to-use parallelism with low-overhead
+  - [Rayon](https://docs.rs/rayon/latest/rayon/) makes multi-threading easy
+  - [std::thread](https://doc.rust-lang.org/std/thread/) ships with the language
+- Feasible to use SIMD
+  - [core::arch](https://doc.rust-lang.org/core/arch/index.html) makes platform-specific instructions available
+  - [std::simd](https://doc.rust-lang.org/std/simd/index.html) will make SIMD 
+- Re-use optimized solutions via dependencies
+  - Easy to leverage the work of others
+  - Example: [ryu](https://crates.io/crates/ryu), the crate for writing floats to strings
