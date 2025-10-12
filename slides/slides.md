@@ -161,7 +161,7 @@ The glue between Python and Rust. PyO3 exposes:
 * Python types to Rust e.g. `PyAny`
 * Conversion between Rust and Python types
 * Rust functions to Python via `#[pyfunction]`
-* Rust strucs to Python via `#[pyclass]`
+* Rust structs to Python via `#[pyclass]`
 
 
 
@@ -177,3 +177,42 @@ The glue between Python and Rust. PyO3 exposes:
 ::::
 
 ## PyO3 In Practice
+
+Most of the work is to bridge the data between Python and Rust. Once that is settled, it becomes Rust code.
+
+
+\tiny
+```rust
+#[pyfunction]
+fn decode_jxl_as_array<'py>(
+    py: Python<'py>,
+    jxl_bytes: &Bound<'py, PyBytes>,
+) -> PyResult<Bound<'py, PyArrayDyn<u8>>> {
+    // Convert PyBytes to something Rust understands.
+    let bytes = jxl_bytes.as_bytes();
+    let cursor = std::io::Cursor::new(bytes);
+
+    // Implementation details are hidden on purpose.
+    let array = decode_jxl_core(cursor).map_err(|e| PyValueError::new_err(e))?;
+
+    // Convert to a NumPy array and return.
+    Ok(PyArrayDyn::from_array(py, &array))
+}
+```
+
+## Modules
+
+We need to export our functions and classes in modules. 
+
+The good news: it is still much faster than regular Python imports.
+
+
+\tiny
+```rust
+#[pymodule]
+fn jxl_demo(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(decode_jxl_as_array, m)?)?;
+    m.add_function(wrap_pyfunction!(decode_jxl, m)?)?;
+    Ok(())
+}
+```
