@@ -3,6 +3,7 @@ mod core;
 use core::decode_jxl_core;
 use numpy::PyArrayDyn;
 use numpy::PyUntypedArrayMethods;
+use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::PyBytes;
 
@@ -19,7 +20,7 @@ fn decode_jxl_as_array<'py>(
 
     // This method reads the image in a ndarray::ArrayD. Implementation details
     // are not relevant.
-    let array = decode_jxl_core(cursor).map_err(|e| pyo3::exceptions::PyValueError::new_err(e))?;
+    let array = decode_jxl_core(cursor).map_err(|e| PyValueError::new_err(e))?;
 
     // Convert to a NumPy array and return.
     Ok(PyArrayDyn::from_array(py, &array))
@@ -42,11 +43,8 @@ fn decode_jxl<'py>(
     let shape = np_array.shape();
 
     // Create Pillow Image from NumPy array
-    let pil_img = if shape[2] == 3 {
+    let pil_img = if shape[2] == 3 || shape[2] == 4 {
         // a.k.a. RGB case
-        fromarray_fn.call1((np_array,))?
-    } else if shape[2] == 4 {
-        // a.k.a. RGBA case
         fromarray_fn.call1((np_array,))?
     } else if shape[2] == 1 {
         // a.k.a. monochrome case
@@ -55,7 +53,7 @@ fn decode_jxl<'py>(
         fromarray_fn.call1((squeezed, "L"))?
     } else {
         // Unsupported number of channels
-        return Err(pyo3::exceptions::PyValueError::new_err(format!(
+        return Err(PyValueError::new_err(format!(
             "Unsupported number of channels: {}. Expected 1 (grayscale), 3 (RGB), or 4 (RGBA)",
             shape[2]
         )));

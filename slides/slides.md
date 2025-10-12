@@ -4,6 +4,7 @@ author: "Ivan Carvalho"
 format:
   beamer:
     pdf-engine: tectonic
+    theme: metropolis
 ---
 
 ## Agenda
@@ -24,13 +25,11 @@ Rust has taken over the Python ecosystem!
 
 - Popular libraries like `pydantic` and `cryptography` use Rust
 - Python tooling also uses Rust like:
-    - Astral's `uv`
+    - Astral's uv
     - Microsoft's Python Environment Tools
-    - Facebook's `pyrefly`
+    - Facebook's Pyrefly
 
 But why? Hopefully you'll understand by the end.
-
-note: this presentation was rendered with Tectonic (LaTeX in Rust)
 
 ## Tools we are going to be using
 
@@ -69,7 +68,7 @@ These are the two files from `maturin new`, edited by me.
 ::: {.column width="50%"}
 ### Cargo.toml
 
-\scriptsize
+\tiny
 ```toml
 [package]
 name = "jxl_demo"
@@ -97,7 +96,7 @@ jxl-oxide = "0.11.4"
 ::: {.column width="50%"}
 ### pyproject.toml
 
-\scriptsize
+\tiny
 ```toml
 [build-system]
 requires = ["maturin>=1.9,<2.0"]
@@ -107,7 +106,7 @@ build-backend = "maturin"
 name = "jxl_demo"
 requires-python = ">=3.10"
 classifiers = [
-    // ommited
+    # ommited
 ]
 dynamic = ["version"]
 dependencies = [
