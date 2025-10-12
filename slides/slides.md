@@ -263,3 +263,23 @@ PyO3 provides a `PyResult<T>` type:
 
 * If your method returns the `Ok(_)` case, it means no error happened
 * If it returns the `Err(_)` case, PyO3 will raise an exception on the Python side
+
+## Three main categories for Rust extensions
+
+Now that we introduced Rust extensions, we can categorize three main groups of extensions:
+
+* Simple Rust bindings
+* Shared implementation between languages
+* High-performance Python extensions with Rust backend
+
+## Simple Rust Bindings
+
+We want to reuse existing Rust code.
+
+Examples include:
+
+* This demo
+* [rpds-py](https://github.com/crate-py/rpds): bindings to a `rpds` from Rust
+
+## Shared Implementation Between Lnguages
+
