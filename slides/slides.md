@@ -341,6 +341,15 @@ Rust tooling makes extensions easy to distribute:
 
 No one cares if your extension is fast it they can't install it!
 
+## Pragmatic Adoption of Rust Extensions
+
+As discussed, PyO3 can blend in with existing Python code. Thus, Rust can be adopted incrementally:
+
+1. Identify the bottleneck in Python code
+2. Rewrite it in Rust
+3. Move to the next bottleneck 
+
+
 ## Homework
 
 Give PyO3 a try:
