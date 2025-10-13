@@ -48,3 +48,9 @@ import jxl_demo
 ```
 
 The `jxl_demo` module has two functions: `decode_jxl` and `decode_jxl_as_array`.
+
+## Resources
+
+* [Maturin User Guide](https://www.maturin.rs/)
+* [PyO3 User Guide](https://pyo3.rs/v0.26.0/)
+* [Cargo Book](https://doc.rust-lang.org/cargo/)
